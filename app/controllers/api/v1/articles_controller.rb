@@ -1,7 +1,5 @@
-
-
-  # app\controllers\api\v1\articles_controller.rb
-class Api::V1::ArticlesController < ApplicationController
+class Api::V1::ArticlesController < ActionController::Base
+  skip_before_action :verify_authenticity_token
   before_action :set_article, only: [:show, :update, :destroy]
 
   def index
@@ -19,7 +17,7 @@ class Api::V1::ArticlesController < ApplicationController
     if @article.save
       render json: @article, status: :created
     else
-      render json: @article.errors, status: :unprocessable_entity
+      render json: { errors: @article.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -27,7 +25,7 @@ class Api::V1::ArticlesController < ApplicationController
     if @article.update(article_params)
       render json: @article
     else
-      render json: @article.errors, status: :unprocessable_entity
+      render json: { errors: @article.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -39,13 +37,13 @@ class Api::V1::ArticlesController < ApplicationController
   private
 
   def set_article
-    @article = Article.find(params[:id])
+    @article = Article.find_by(id: params[:id])
+    render json: { error: 'Article not found' }, status: :not_found if @article.nil?
   end
+  
 
   def article_params
-    params.require(:article).permit(:title, :content)
+    params.require(:article).permit(:title, :body, :status)
   end
-
+  
 end
-
-
