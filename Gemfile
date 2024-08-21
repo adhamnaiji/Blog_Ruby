@@ -57,6 +57,10 @@ gem 'devise', '~> 4.9', '>= 4.9.4'
 gem 'devise-jwt'
 gem 'rack-cors'
 
+# Gemfile
+group :development, :test do
+  gem 'factory_bot_rails'
+end
 
 
 group :development, :test do
